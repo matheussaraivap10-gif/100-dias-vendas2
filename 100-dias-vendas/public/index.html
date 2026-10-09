@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Dias de Confiança — Treinamento Prático</title>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <script src="https://sdk.mercadopago.com/js/v2" crossorigin="anonymous"></script>
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { darkBg: '#080808', cardBg: '#121212', cardBorder: '#222222', primaryRed: '#FF3B30', accentGreen: '#32D74B' } } } }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #080808; color: #F5F5F7; overflow-x: hidden; }
+        .glow-red { box-shadow: 0 0 50px -10px rgba(255, 59, 48, 0.15); }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 antialiased selection:bg-primaryRed selection:text-white">
+    <section class="relative min-h-screen flex items-center justify-center pt-16 pb-16 px-6 overflow-hidden">
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primaryRed/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">Você não precisa virar <br class="hidden sm:inline" /><span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400">outra pessoa.</span></h1>
+            <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 font-light leading-relaxed">Talvez você só precise parar de editar tudo o que pensa antes de agir. <strong class="text-white font-normal block mt-2">100 Dias de Confiança</strong> é um treinamento prático para reduzir a autocensura, agir com mais espontaneidade e construir confiança através de pequenas ações diárias.</p>
+            <a href="#questionario" class="w-full sm:w-auto bg-primaryRed hover:bg-red-600 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-xl shadow-primaryRed/25 flex items-center justify-center gap-3">COMEÇAR O TESTE GRATUITO →</a>
+        </div>
+    </section>
+
+    <section id="questionario" class="py-24 px-6 border-t border-white/5 relative bg-[#0a0a0a]">
+        <div class="max-w-2xl mx-auto">
+            <div id="quiz-box" class="bg-cardBg border border-cardBorder rounded-2xl p-6 sm:p-10 shadow-2xl relative">
+                <div class="mb-8 flex justify-between items-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    <span id="quiz-step-indicator">Pergunta 1 de 10</span>
+                </div>
+                <h3 id="quiz-question-title" class="text-xl sm:text-2xl font-bold text-white mb-8 min-h-[4rem] flex items-center">Carregando pergunta...</h3>
+                <div id="quiz-options" class="space-y-3 mb-8"></div>
+                <div class="flex justify-between items-center pt-4 border-t border-white/5">
+                    <button id="quiz-prev-btn" onclick="prevQuestion()" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors" disabled>← Voltar</button>
+                    <button id="quiz-next-btn" onclick="nextQuestion()" class="bg-white/10 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all" disabled>Próxima →</button>
+                </div>
+            </div>
+            <div id="result-box" class="hidden bg-cardBg border border-cardBorder rounded-2xl p-6 sm:p-10 shadow-2xl text-center">
+                <span class="text-xs font-bold tracking-widest text-primaryRed uppercase block mb-2">SEU RESULTADO</span>
+                <h3 id="result-mode-title" class="text-3xl sm:text-4xl font-extrabold text-white mb-6"></h3>
+                <p id="result-mode-desc" class="text-sm text-slate-300 mb-8 max-w-lg mx-auto font-light"></p>
+                <div class="bg-black/40 border border-white/5 rounded-xl p-6 text-left mb-8">
+                    <ul id="result-bullets" class="space-y-3 text-sm text-slate-200"></ul>
+                </div>
+                <a href="#oferta" class="inline-flex items-center justify-center w-full bg-primaryRed text-white font-bold px-8 py-4 rounded-xl">QUERO CONHECER O MÉTODO →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="oferta" class="py-24 px-6 bg-[#080808] border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-xl mx-auto text-center relative z-10">
+            <div class="bg-cardBg border border-cardBorder rounded-3xl p-8 sm:p-12 shadow-2xl glow-red">
+                <h2 class="text-3xl font-extrabold text-white mb-6">Comece seus 100 dias hoje.</h2>
+                <div class="text-4xl font-black text-white mb-8">R$ 19,90</div>
+                <button id="btn-comprar" class="block w-full bg-primaryRed text-white font-extrabold py-4 px-8 rounded-xl mb-6">QUERO COMEÇAR OS 100 DIAS →</button>
+                <div id="payment-brick-container" class="hidden mt-6 bg-white rounded-xl p-4"></div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const questions = ["Você costuma editar mentalmente uma frase antes de falar?", "Depois de uma conversa, você fica pensando no que poderia ter respondido?", "Você deixa de fazer algo porque imagina como outras pessoas vão reagir?", "Você demora para tomar decisões simples mesmo sabendo o que quer?", "Você sente que pensa demais antes de tomar iniciativa?", "Quando percebe que falou algo estranho, continua pensando nisso depois?", "Você procura a resposta 'perfeita' em vez de simplesmente responder?", "Você sente que sua espontaneidade diminuiu?", "Você sabe que deveria agir, mas continua esperando sentir vontade ou confiança?", "Quando surge uma oportunidade, você pensa tanto que acaba perdendo o momento?"];
+        const options = [{ text: "Nunca", points: 0 }, { text: "Às vezes", points: 1 }, { text: "Frequentemente", points: 2 }, { text: "Quase sempre", points: 3 }];
+        let currentQuestion = 0; let answers = new Array(questions.length).fill(null);
+        function renderQuestion() {
+            document.getElementById('quiz-question-title').textContent = (currentQuestion + 1) + ". " + questions[currentQuestion];
+            document.getElementById('quiz-step-indicator').textContent = "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
+            document.getElementById('quiz-prev-btn').disabled = currentQuestion === 0;
+            const nextBtn = document.getElementById('quiz-next-btn');
+            nextBtn.disabled = answers[currentQuestion] === null;
+            nextBtn.textContent = currentQuestion === questions.length - 1 ? "Ver Resultado →" : "Próxima →";
+            const qOptions = document.getElementById('quiz-options'); qOptions.innerHTML = '';
+            options.forEach(opt => {
+                const isSelected = answers[currentQuestion] === opt.points;
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl border transition-all flex justify-between text-sm " + (isSelected ? "border-primaryRed bg-primaryRed/10 text-white" : "border-cardBorder bg-[#161616] text-slate-300");
+                btn.innerHTML = "<span>" + opt.text + "</span>";
+                btn.onclick = () => { answers[currentQuestion] = opt.points; renderQuestion(); };
+                qOptions.appendChild(btn);
+            });
+        }
+        function nextQuestion() { if (currentQuestion < questions.length - 1) { currentQuestion++; renderQuestion(); } else { showResult(); } }
+        function prevQuestion() { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } }
+        function showResult() {
+            document.getElementById('quiz-box').classList.add('hidden'); document.getElementById('result-box').classList.remove('hidden');
+            const totalScore = answers.reduce((a, b) => a + b, 0);
+            let modeTitle = "", modeDesc = "", bullets = [];
+            if (totalScore <= 7) { modeTitle = "MODO LIVRE"; bullets = ["manter o hábito"]; }
+            else if (totalScore <= 15) { modeTitle = "MODO ALERTA"; bullets = ["agir antes de editar demais"]; }
+            else if (totalScore <= 23) { modeTitle = "MODO FISCAL"; bullets = ["tolerar pequenos desconfortos"]; }
+            else { modeTitle = "MODO AUTOCENSURA"; bullets = ["interromper a ruminação excessiva"]; }
+            document.getElementById('result-mode-title').textContent = "Você está no " + modeTitle;
+            document.getElementById('result-bullets').innerHTML = bullets.map(b => "<li>• " + b + "</li>").join('');
+        }
+        window.onload = renderQuestion;
+
+        const mp = new MercadoPago('APP_USR-coloque-sua-public-key-aqui', { locale: 'pt-BR' });
+        document.getElementById('btn-comprar').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-comprar'); btn.innerText = "A carregar..."; btn.disabled = true;
+            try {
+                const response = await fetch('/api/create_preference', { method: 'POST' });
+                const data = await response.json();
+                if (data.id) {
+                    document.getElementById('payment-brick-container').classList.remove('hidden'); btn.classList.add('hidden');
+                    mp.bricks().create("payment", "payment-brick-container", { initialization: { preferenceId: data.id, amount: 19.90 }, customization: { paymentMethods: { pix: "all", creditCard: "all" } }});
+                }
+            } catch (error) { btn.innerText = "Erro."; btn.disabled = false; }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Confirmado</title>
+    <script src="https://cdn.tailwindcss.com" crossorigin="anonymous"></script>
+    <style>body { background-color: #080808; color: #F5F5F7; font-family: sans-serif; }</style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+    <div id="status-card" class="bg-[#121212] border border-[#222222] rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+        <h2 class="text-xl font-bold">A confirmar o pagamento...</h2>
+    </div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const paymentId = urlParams.get('payment_id');
+        const status = urlParams.get('status');
+        if (status === 'pending') { window.location.href = 'pendente.html'; }
+        else if (status === 'rejected' || status === 'null') { window.location.href = 'erro.html'; }
+        else if (paymentId) {
+            fetch("/api/verify?payment_id=" + paymentId).then(res => res.json()).then(data => {
+                if (data.approved && data.downloadToken) {
+                    document.getElementById('status-card').innerHTML = "<h1 class='text-3xl font-extrabold mb-4'>Pagamento confirmado 🎉</h1><a href='/api/download?token=" + data.downloadToken + "' class='block w-full bg-[#FF3B30] text-white font-bold py-4 rounded-xl'>ACEDER AO MEU E-BOOK</a>";
+                } else { window.location.href = 'pendente.html'; }
+            }).catch(() => window.location.href = 'erro.html');
+        } else { window.location.href = 'index.html'; }
+    </script>
+</body>
+</html>

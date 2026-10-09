@@ -1,0 +1,12 @@
+{
+  "name": "100-dias-confianca",
+  "version": "1.0.0",
+  "description": "Página de Vendas - 100 Dias de Confiança",
+  "scripts": {
+    "start": "node"
+  },
+  "dependencies": {
+    "mercadopago": "^2.0.9",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
